@@ -87,7 +87,7 @@ class ABNSchedulerTests: XCTestCase {
         XCTAssertEqual(0, ABNScheduler.count())
     }
     
-    func testFarthestNotifiaction() {
+    func testFarthestNotification() {
         for i in 1...5 {
             ABNScheduler.schedule(alertBody: "test #\(i)", fireDate: NSDate().nextHours(i))
         }
@@ -112,7 +112,7 @@ class ABNSchedulerTests: XCTestCase {
         XCTAssertEqual(15, ABNScheduler.scheduledNotifications()?.count)
     }
     
-    func testScheduleNotificationFromQueue() {
+    func testScheduleNotificationsFromQueue() {
         for _ in 1...99 {
             ABNScheduler.schedule(alertBody: "test", fireDate: NSDate().nextHours(1))
         }
@@ -174,7 +174,7 @@ class ABNSchedulerTests: XCTestCase {
         XCTAssertEqual(true, note?.isScheduled())
     }
     
-    func testNotificationHourssSnooze() {
+    func testNotificationHoursSnooze() {
         let identifier = ABNScheduler.schedule(alertBody: "test", fireDate: NSDate().nextHours(1))
         let note = ABNScheduler.notificationWithIdentifier(identifier!)
         
