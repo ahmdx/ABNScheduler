@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B01A7CC61C9898B800FF94F3 /* ABNScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01A7CC51C9898B800FF94F3 /* ABNScheduler.swift */; };
 		B0A8019F1C98878600135DDA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A8019E1C98878600135DDA /* AppDelegate.swift */; };
 		B0A801A11C98878600135DDA /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A801A01C98878600135DDA /* FirstViewController.swift */; };
 		B0A801A31C98878600135DDA /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A801A21C98878600135DDA /* SecondViewController.swift */; };
 		B0A801A81C98878600135DDA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0A801A71C98878600135DDA /* Assets.xcassets */; };
 		B0A801B61C98878600135DDA /* ABNSDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A801B51C98878600135DDA /* ABNSDemoTests.swift */; };
-		B0A801C11C9887D600135DDA /* ABNScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A801C01C9887D600135DDA /* ABNScheduler.swift */; };
 		B0A801C31C98881F00135DDA /* ABNSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A801C21C98881F00135DDA /* ABNSchedulerTests.swift */; };
 		B0A801CA1C98906300135DDA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0A801C81C98906300135DDA /* Main.storyboard */; };
 		B0A801CD1C98906D00135DDA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0A801CB1C98906D00135DDA /* LaunchScreen.storyboard */; };
@@ -29,6 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B01A7CC51C9898B800FF94F3 /* ABNScheduler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ABNScheduler.swift; sourceTree = SOURCE_ROOT; };
 		B0A8019B1C98878600135DDA /* ABNSDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ABNSDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0A8019E1C98878600135DDA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B0A801A01C98878600135DDA /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
@@ -38,7 +39,6 @@
 		B0A801B11C98878600135DDA /* ABNSDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ABNSDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0A801B51C98878600135DDA /* ABNSDemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABNSDemoTests.swift; sourceTree = "<group>"; };
 		B0A801B71C98878600135DDA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B0A801C01C9887D600135DDA /* ABNScheduler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ABNScheduler.swift; sourceTree = "<group>"; };
 		B0A801C21C98881F00135DDA /* ABNSchedulerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ABNSchedulerTests.swift; sourceTree = "<group>"; };
 		B0A801C91C98906300135DDA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B0A801CC1C98906D00135DDA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -86,7 +86,7 @@
 				B0A8019E1C98878600135DDA /* AppDelegate.swift */,
 				B0A801A01C98878600135DDA /* FirstViewController.swift */,
 				B0A801A21C98878600135DDA /* SecondViewController.swift */,
-				B0A801C01C9887D600135DDA /* ABNScheduler.swift */,
+				B01A7CC51C9898B800FF94F3 /* ABNScheduler.swift */,
 				B0A801C81C98906300135DDA /* Main.storyboard */,
 				B0A801A71C98878600135DDA /* Assets.xcassets */,
 				B0A801CB1C98906D00135DDA /* LaunchScreen.storyboard */,
@@ -207,7 +207,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B0A801A31C98878600135DDA /* SecondViewController.swift in Sources */,
-				B0A801C11C9887D600135DDA /* ABNScheduler.swift in Sources */,
+				B01A7CC61C9898B800FF94F3 /* ABNScheduler.swift in Sources */,
 				B0A8019F1C98878600135DDA /* AppDelegate.swift in Sources */,
 				B0A801A11C98878600135DDA /* FirstViewController.swift in Sources */,
 			);
@@ -398,6 +398,7 @@
 				B0A801BC1C98878600135DDA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B0A801BD1C98878600135DDA /* Build configuration list for PBXNativeTarget "ABNSDemoTests" */ = {
 			isa = XCConfigurationList;
@@ -406,6 +407,7 @@
 				B0A801BF1C98878600135DDA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
