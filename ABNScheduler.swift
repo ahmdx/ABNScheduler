@@ -148,14 +148,14 @@ class ABNScheduler {
             let notif = notificationWithIdentifier(note.userInfo?[identifierKey] as! String)
             notificationsArray[i] = notif
             notif?.cancel()
-            ++i
+            i += 1
         }
         
         let queuedNotifications = ABNQueue.queue.notificationsQueue()
         
         for note in queuedNotifications {
             notificationsArray[i] = note
-            ++i
+            i += 1
         }
         
         cancelAllNotifications()
@@ -212,14 +212,14 @@ class ABNScheduler {
         for note in notifs! {
             let id = note.userInfo![identifierKey] as! String
             print("\(i) Alert body: \(note.alertBody!) - Fire date: \(note.fireDate!) - Repeats: \(ABNotification.calendarUnitToRepeats(calendarUnit: note.repeatInterval)) - Identifier: \(id)")
-            i++
+            i += 1
         }
         
         print("QUEUED")
         
         for note in notificationQueue {
             print("\(i) Alert body: \(note.alertBody) - Fire date: \(note.fireDate!) - Repeats: \(note.repeatInterval) - Identifier: \(note.identifier)")
-            i++
+            i += 1
         }
         
         print("")
@@ -441,7 +441,7 @@ public class ABNotification : NSObject, NSCoding, Comparable {
                 ABNQueue.queue.removeAtIndex(i)
                 break
             }
-            ++i
+            i += 1
         }
         scheduled = false
     }
