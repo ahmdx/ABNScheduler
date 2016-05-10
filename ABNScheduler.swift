@@ -97,9 +97,9 @@ class ABNScheduler {
     
     ///Schedules the maximum possible number of ABNotification from the ABNQueue
     class func scheduleNotificationsFromQueue() {
-        for _ in 0..<(min(maximumScheduledNotifications, MAX_ALLOWED_NOTIFICATIONS) - scheduledCount()) {
+        for _ in 0..<(min(maximumScheduledNotifications, MAX_ALLOWED_NOTIFICATIONS) - scheduledCount()) where ABNQueue.queue.count() > 0 {
             let notification = ABNQueue.queue.pop()
-            notification?.schedule(fireDate: (notification?.fireDate)!)
+            notification.schedule(fireDate: notification.fireDate!)
         }
     }
     
@@ -268,7 +268,7 @@ private class ABNQueue : NSObject {
     
     ///Removes and returns the head of the queue.
     ///- returns: The head of the queue.
-    private func pop() -> ABNotification? {
+    private func pop() -> ABNotification {
         return notifQueue.removeFirst()
     }
     
