@@ -1,4 +1,4 @@
-# ABNScheduler
+# ABNScheduler [![Build Status](https://travis-ci.org/ahmdx/ABNScheduler.svg?branch=master)](https://travis-ci.org/ahmdx/ABNScheduler)
 
 ABNScheduler is a local notifications scheduler for iOS written in Swift.
 
