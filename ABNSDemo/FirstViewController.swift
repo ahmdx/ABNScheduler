@@ -27,8 +27,8 @@ class FirstViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        self.tabBarController!.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Schedule", style: UIBarButtonItemStyle.Plain, target: self, action: "schedule")
-        self.tabBarController!.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel All", style: UIBarButtonItemStyle.Plain, target: self, action: "cancelAll")
+        self.tabBarController!.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Schedule", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(FirstViewController.schedule))
+        self.tabBarController!.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel All", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(FirstViewController.cancelAll))
         
         alertBodyField = self.view.viewWithTag(10) as! UITextField
         alertBodyField.delegate = self
@@ -68,7 +68,7 @@ class FirstViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
     @IBAction func setFireDate() {
         if datePicker == nil {
             datePicker = UIDatePicker(frame: CGRectMake(0,UIScreen.mainScreen().bounds.size.height-250, UIScreen.mainScreen().bounds.size.width, 200))
-            datePicker.addTarget(self, action: "didSelectDate:", forControlEvents: UIControlEvents.ValueChanged)
+            datePicker.addTarget(self, action: #selector(FirstViewController.didSelectDate(_:)), forControlEvents: UIControlEvents.ValueChanged)
             self.view.addSubview(datePicker)
         }
         
