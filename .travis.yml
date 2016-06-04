@@ -1,0 +1,5 @@
+language: objective-c
+osx_image: xcode7.3
+xcode_project: ABNSDemo.xcodeproj
+xcode_scheme: ABNSDemo
+xcode_sdk: iphonesimulator9.3
