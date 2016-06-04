@@ -48,6 +48,18 @@ ABNScheduler uses a priority queue to handle more than 64 notifications. When th
 
 Additionally, the notifications queue is not saved to disk automatically, therefore, you will need to call `ABNScheduler.saveQueue()` whenever you need to persist the queue to disk. You do not need to load the queue when your app launches; this is handled automatically whenever the queue is to be accessed.
 
+###Repeating a Notification
+
+You can repeat a notification every hour, day, week, month, year using `Repeats` `.Hourly`, `.Daily`, `.Weekly`, `.Monthly`, `.Yearly` respectively.
+
+Repeating a notification daily:
+
+```
+var notification = ABNotification(alertBody: "A Notification")
+notification.repeatInterval = Repeats.Daily
+let identifier = notification.schedule(fireDate: NSDate().nextHours(2))
+```
+
 ### Retrieving a Notification
 ```
 let notification = ABNScheduler.notificationWithIdentifier("identifier")

@@ -97,9 +97,9 @@ class ABNScheduler {
     
     ///Schedules the maximum possible number of ABNotification from the ABNQueue
     class func scheduleNotificationsFromQueue() {
-        for _ in 0..<(min(maximumScheduledNotifications, MAX_ALLOWED_NOTIFICATIONS) - scheduledCount()) {
+        for _ in 0..<(min(maximumScheduledNotifications, MAX_ALLOWED_NOTIFICATIONS) - scheduledCount()) where ABNQueue.queue.count() > 0 {
             let notification = ABNQueue.queue.pop()
-            notification?.schedule(fireDate: (notification?.fireDate)!)
+            notification.schedule(fireDate: notification.fireDate!)
         }
     }
     
@@ -148,14 +148,14 @@ class ABNScheduler {
             let notif = notificationWithIdentifier(note.userInfo?[identifierKey] as! String)
             notificationsArray[i] = notif
             notif?.cancel()
-            ++i
+            i += 1
         }
         
         let queuedNotifications = ABNQueue.queue.notificationsQueue()
         
         for note in queuedNotifications {
             notificationsArray[i] = note
-            ++i
+            i += 1
         }
         
         cancelAllNotifications()
@@ -212,14 +212,14 @@ class ABNScheduler {
         for note in notifs! {
             let id = note.userInfo![identifierKey] as! String
             print("\(i) Alert body: \(note.alertBody!) - Fire date: \(note.fireDate!) - Repeats: \(ABNotification.calendarUnitToRepeats(calendarUnit: note.repeatInterval)) - Identifier: \(id)")
-            i++
+            i += 1
         }
         
         print("QUEUED")
         
         for note in notificationQueue {
             print("\(i) Alert body: \(note.alertBody) - Fire date: \(note.fireDate!) - Repeats: \(note.repeatInterval) - Identifier: \(note.identifier)")
-            i++
+            i += 1
         }
         
         print("")
@@ -268,7 +268,7 @@ private class ABNQueue : NSObject {
     
     ///Removes and returns the head of the queue.
     ///- returns: The head of the queue.
-    private func pop() -> ABNotification? {
+    private func pop() -> ABNotification {
         return notifQueue.removeFirst()
     }
     
@@ -441,7 +441,7 @@ public class ABNotification : NSObject, NSCoding, Comparable {
                 ABNQueue.queue.removeAtIndex(i)
                 break
             }
-            ++i
+            i += 1
         }
         scheduled = false
     }
