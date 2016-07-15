@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B01A7CC61C9898B800FF94F3 /* ABNScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01A7CC51C9898B800FF94F3 /* ABNScheduler.swift */; };
+		79D183181D38D73300CD2514 /* ABNScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D183171D38D73300CD2514 /* ABNScheduler.swift */; };
+		79D183191D38D73300CD2514 /* ABNScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D183171D38D73300CD2514 /* ABNScheduler.swift */; };
 		B0A8019F1C98878600135DDA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A8019E1C98878600135DDA /* AppDelegate.swift */; };
 		B0A801A11C98878600135DDA /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A801A01C98878600135DDA /* FirstViewController.swift */; };
 		B0A801A31C98878600135DDA /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A801A21C98878600135DDA /* SecondViewController.swift */; };
@@ -29,7 +30,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		B01A7CC51C9898B800FF94F3 /* ABNScheduler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ABNScheduler.swift; sourceTree = SOURCE_ROOT; };
+		79D183171D38D73300CD2514 /* ABNScheduler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ABNScheduler.swift; path = Classes/ABNScheduler.swift; sourceTree = SOURCE_ROOT; };
 		B0A8019B1C98878600135DDA /* ABNSDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ABNSDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0A8019E1C98878600135DDA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B0A801A01C98878600135DDA /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
@@ -83,10 +84,10 @@
 		B0A8019D1C98878600135DDA /* ABNSDemo */ = {
 			isa = PBXGroup;
 			children = (
+				79D183171D38D73300CD2514 /* ABNScheduler.swift */,
 				B0A8019E1C98878600135DDA /* AppDelegate.swift */,
 				B0A801A01C98878600135DDA /* FirstViewController.swift */,
 				B0A801A21C98878600135DDA /* SecondViewController.swift */,
-				B01A7CC51C9898B800FF94F3 /* ABNScheduler.swift */,
 				B0A801C81C98906300135DDA /* Main.storyboard */,
 				B0A801A71C98878600135DDA /* Assets.xcassets */,
 				B0A801CB1C98906D00135DDA /* LaunchScreen.storyboard */,
@@ -207,7 +208,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B0A801A31C98878600135DDA /* SecondViewController.swift in Sources */,
-				B01A7CC61C9898B800FF94F3 /* ABNScheduler.swift in Sources */,
+				79D183181D38D73300CD2514 /* ABNScheduler.swift in Sources */,
 				B0A8019F1C98878600135DDA /* AppDelegate.swift in Sources */,
 				B0A801A11C98878600135DDA /* FirstViewController.swift in Sources */,
 			);
@@ -218,6 +219,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B0A801B61C98878600135DDA /* ABNSDemoTests.swift in Sources */,
+				79D183191D38D73300CD2514 /* ABNScheduler.swift in Sources */,
 				B0A801C31C98881F00135DDA /* ABNSchedulerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
