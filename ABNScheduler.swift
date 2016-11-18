@@ -206,7 +206,7 @@ class ABNScheduler {
             return
         }
         
-        print("SCHEDLUED")
+        print("SCHEDULED")
         
         var i = 1
         for note in notifs! {
@@ -500,7 +500,10 @@ public class ABNotification : NSObject, NSCoding, Comparable {
     // MARK: NSCoding
     
     @objc convenience public required init?(coder aDecoder: NSCoder) {
-        guard let localNotification = aDecoder.decodeObjectForKey("ABNNotification") as? UILocalNotification, let alertBody =  aDecoder.decodeObjectForKey("ABNAlertBody") as? String, let alertAction = aDecoder.decodeObjectForKey("ABNAlertAction") as? String, let soundName = aDecoder.decodeObjectForKey("ABNSoundName") as? String, let repeats = aDecoder.decodeObjectForKey("ABNRepeats") as? String, let userInfo = aDecoder.decodeObjectForKey("ABNUserInfo") as? Dictionary<NSObject, AnyObject>, let identifier = aDecoder.decodeObjectForKey("ABNIdentifier") as? String, let scheduled = aDecoder.decodeObjectForKey("ABNScheduled") as? Bool else { return nil }
+        guard let localNotification = aDecoder.decodeObjectForKey("ABNNotification") as? UILocalNotification, let alertBody =  aDecoder.decodeObjectForKey("ABNAlertBody") as? String, let repeats = aDecoder.decodeObjectForKey("ABNRepeats") as? String, let userInfo = aDecoder.decodeObjectForKey("ABNUserInfo") as? Dictionary<NSObject, AnyObject>, let identifier = aDecoder.decodeObjectForKey("ABNIdentifier") as? String, let scheduled = aDecoder.decodeObjectForKey("ABNScheduled") as? Bool else { return nil }
+        
+        let alertAction = aDecoder.decodeObjectForKey("ABNAlertAction") as? String
+        let soundName = aDecoder.decodeObjectForKey("ABNSoundName") as? String
         
         self.init(notification: localNotification, alertBody: alertBody, alertAction: alertAction, soundName: soundName, identifier: identifier, repeats: Repeats(rawValue: repeats)!, userInfo: userInfo, scheduled: scheduled)
     }
