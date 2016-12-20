@@ -1,4 +1,8 @@
-# ABNScheduler
+# ABNScheduler 
+[![Build Status](https://travis-ci.org/ahmdx/ABNScheduler.svg?branch=master)](https://travis-ci.org/ahmdx/ABNScheduler)
+[![Swift 2.2](https://img.shields.io/badge/Swift-2.2-orange.svg?style=flat)](https://swift.org)
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/ahmdx/ABNScheduler/blob/master/LICENSE)
+
 
 ABNScheduler is a local notifications scheduler for iOS written in Swift.
 
@@ -95,6 +99,8 @@ You can cancel all scheduled notifications by calling `ABNScheduler.cancelAllNot
 
 ## Drawbacks
 Since the additional notifications are handled entirely by the app, it must be launched for the notifications to be scheduled by iOS. Just do not forget to call `ABNScheduler.scheduleNotificationsFromQueue()`.
+
+Currently, this version of ABNScheduler does not support handling multiple notifications having the same identifier. It is submitted as an issue and will be completed soon.
 
 ## Notes
 The scheduler is preset to allow 60 notifications to be scheduled by iOS. The remaining four slots are kept for the app-defined notifications that need not to be queued. These free slots are currently not handled by ABNScheduler; if you use ABNScheduler to utilize these slots, the notifications will be added to the queue. To change the maximum allowed, just update `maximumScheduledNotifications` in ABNScheduler.swift.
