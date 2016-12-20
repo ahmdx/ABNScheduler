@@ -40,7 +40,7 @@ class ABNScheduler {
     static let maximumScheduledNotifications = 60
     
     /// The key of the notification's identifier.
-    private let identifierKey = "ABNIdentifier"
+    fileprivate let identifierKey = "ABNIdentifier"
     /// The key of the notification's identifier.
     static let identifierKey = "ABNIdentifier"
     
@@ -50,7 +50,7 @@ class ABNScheduler {
     ///- returns: Notification's identifier if it was successfully scheduled, nil otherwise.
     /// To get an ABNotificaiton instance of this notification, use this identifier with 
     /// `ABNScheduler.notificationWithIdentifier(_:)`.
-    class func schedule(alertBody alertBody: String, fireDate: NSDate) -> String? {
+    class func schedule(alertBody: String, fireDate: Date) -> String? {
         let notification = ABNotification(alertBody: alertBody)
         if let identifier = notification.schedule(fireDate: fireDate) {
             return identifier
@@ -60,13 +60,13 @@ class ABNScheduler {
     
     ///Cancels the specified notification.
     ///- paramater: Notification to cancel.
-    class func cancel(notification: ABNotification) {
+    class func cancel(_ notification: ABNotification) {
         notification.cancel()
     }
     
     ///Cancels all scheduled UILocalNotification and clears the ABNQueue.
     class func cancelAllNotifications() {
-        UIApplication.sharedApplication().cancelAllLocalNotifications()
+        UIApplication.shared.cancelAllLocalNotifications()
         ABNQueue.queue.clear()
         saveQueue()
         print("All notifications have been cancelled")
@@ -74,15 +74,15 @@ class ABNScheduler {
     
     ///- returns: ABNotification of the farthest UILocalNotification (last to be fired).
     class func farthestLocalNotification() -> ABNotification? {
-        if let localNotification = UIApplication.sharedApplication().scheduledLocalNotifications?.last {
+        if let localNotification = UIApplication.shared.scheduledLocalNotifications?.last {
             return notificationWithUILocalNotification(localNotification)
         }
         return nil
     }
     
-    ///- returns: Count of scheduled UILocalNotification.
+    ///- returns: Count of scheduled UILocalNotification by iOS.
     class func scheduledCount() -> Int {
-        return (UIApplication.sharedApplication().scheduledLocalNotifications?.count)!
+        return (UIApplication.shared.scheduledLocalNotifications?.count)!
     }
     
     ///- returns: Count of queued ABNotification.
@@ -99,7 +99,7 @@ class ABNScheduler {
     class func scheduleNotificationsFromQueue() {
         for _ in 0..<(min(maximumScheduledNotifications, MAX_ALLOWED_NOTIFICATIONS) - scheduledCount()) where ABNQueue.queue.count() > 0 {
             let notification = ABNQueue.queue.pop()
-            notification.schedule(fireDate: notification.fireDate!)
+            let _ = notification.schedule(fireDate: notification.fireDate!)
         }
     }
     
@@ -107,8 +107,8 @@ class ABNScheduler {
     ///Creates an ABNotification from a UILocalNotification or from the ABNQueue.
     ///- parameter identifier: Identifier of the required notification.
     ///- returns: ABNotification if found, nil otherwise.
-    class func notificationWithIdentifier(identifier: String) -> ABNotification? {
-        let notifs = UIApplication.sharedApplication().scheduledLocalNotifications
+    class func notificationWithIdentifier(_ identifier: String) -> ABNotification? {
+        let notifs = UIApplication.shared.scheduledLocalNotifications
         let queue = ABNQueue.queue.notificationsQueue()
         if notifs?.count == 0 && queue.count == 0 {
             return nil
@@ -131,7 +131,7 @@ class ABNScheduler {
     ///Instantiates an ABNotification from a UILocalNotification.
     ///- parameter localNotification: The UILocalNotification to instantiate an ABNotification from.
     ///- returns: The instantiated ABNotification from the UILocalNotification.
-    class func notificationWithUILocalNotification(localNotification: UILocalNotification) -> ABNotification {
+    class func notificationWithUILocalNotification(_ localNotification: UILocalNotification) -> ABNotification {
         return ABNotification.notificationWithUILocalNotification(localNotification)
     }
     
@@ -140,9 +140,9 @@ class ABNScheduler {
     ///cancelling them, and scheduling them again.
     class func rescheduleNotifications() {
         let notificationsCount = count()
-        var notificationsArray = [ABNotification?](count: notificationsCount, repeatedValue: nil)
+        var notificationsArray = [ABNotification?](repeating: nil, count: notificationsCount)
         
-        let scheduledNotifications = UIApplication.sharedApplication().scheduledLocalNotifications
+        let scheduledNotifications = UIApplication.shared.scheduledLocalNotifications
         var i = 0
         for note in scheduledNotifications! {
             let notif = notificationWithIdentifier(note.userInfo?[identifierKey] as! String)
@@ -161,14 +161,14 @@ class ABNScheduler {
         cancelAllNotifications()
         
         for note in notificationsArray {
-            note?.schedule(fireDate: (note?.fireDate)!)
+            let _ = note?.schedule(fireDate: (note?.fireDate)!)
         }
     }
     
-    ///Retrieves the scheduled notifications and returns them as ABNotification array.
+    ///Retrieves the total scheduled notifications (by iOS and in the notification queue) and returns them as ABNotification array.
     ///- returns: ABNotification array of scheduled notifications if any, nil otherwise.
     class func scheduledNotifications() -> [ABNotification]? {
-        if let localNotifications = UIApplication.sharedApplication().scheduledLocalNotifications {
+        if let localNotifications = UIApplication.shared.scheduledLocalNotifications {
             var notifications = [ABNotification]()
             
             for localNotification in localNotifications {
@@ -189,7 +189,7 @@ class ABNScheduler {
     ///Persists the notifications queue to the disk
     ///> Call this method whenever you need to save changes done to the queue and/or before terminating the app.
     class func saveQueue() {
-        ABNQueue.queue.save()
+        let _ = ABNQueue.queue.save()
     }
     
     //MARK: Testing
@@ -198,7 +198,7 @@ class ABNScheduler {
     ///> Prints all scheduled and queued notifications.
     ///> You can freely modifiy it without worrying about affecting any functionality.
     class func listScheduledNotifications() {
-        let notifs = UIApplication.sharedApplication().scheduledLocalNotifications
+        let notifs = UIApplication.shared.scheduledLocalNotifications
         let notificationQueue = ABNQueue.queue.notificationsQueue()
         
         if notifs?.count == 0 && notificationQueue.count == 0 {
@@ -230,9 +230,9 @@ class ABNScheduler {
 
 ///- author: Ahmed Mohamed
 private class ABNQueue : NSObject {
-    private var notifQueue = [ABNotification]()
+    fileprivate var notifQueue = [ABNotification]()
     static let queue = ABNQueue()
-    let ArchiveURL = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!.URLByAppendingPathComponent("notifications.abnqueue")
+    let ArchiveURL = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("notifications.abnqueue")
     
     override init() {
         super.init()
@@ -242,8 +242,8 @@ private class ABNQueue : NSObject {
     }
     
     ///- paramater notification ABNotification to push.
-    private func push(notification: ABNotification) {
-        notifQueue.insert(notification, atIndex: findInsertionPoint(notification))
+    fileprivate func push(_ notification: ABNotification) {
+        notifQueue.insert(notification, at: findInsertionPoint(notification))
     }
     
     /** Finds the position at which the new ABNotification is inserted in the queue.
@@ -251,57 +251,60 @@ private class ABNQueue : NSObject {
      - returns: Index to insert the ABNotification at.
      - seealso: [swift-algorithm-club](https://github.com/hollance/swift-algorithm-club/tree/master/Ordered%20Array)
      */
-    private func findInsertionPoint(notification: ABNotification) -> Int {
-        var range = 0..<notifQueue.count
-        while range.startIndex < range.endIndex {
-            let midIndex = range.startIndex + (range.endIndex - range.startIndex) / 2
+    fileprivate func findInsertionPoint(_ notification: ABNotification) -> Int {
+        let range = 0..<notifQueue.count
+        var rangeLowerBound = range.lowerBound
+        var rangeUpperBound = range.upperBound
+        
+        while rangeLowerBound < rangeUpperBound {
+            let midIndex = rangeLowerBound + (rangeUpperBound - rangeLowerBound) / 2
             if notifQueue[midIndex] == notification {
                 return midIndex
             } else if notifQueue[midIndex] < notification {
-                range.startIndex = midIndex + 1
+                rangeLowerBound = midIndex + 1
             } else {
-                range.endIndex = midIndex
+                rangeUpperBound = midIndex
             }
         }
-        return range.startIndex
+        return rangeLowerBound
     }
     
     ///Removes and returns the head of the queue.
     ///- returns: The head of the queue.
-    private func pop() -> ABNotification {
+    fileprivate func pop() -> ABNotification {
         return notifQueue.removeFirst()
     }
     
     ///- returns: The head of the queue.
-    private func peek() -> ABNotification? {
+    fileprivate func peek() -> ABNotification? {
         return notifQueue.last
     }
     
     ///Clears the queue.
-    private func clear() {
+    fileprivate func clear() {
         notifQueue.removeAll()
     }
     
     ///Called when an ABNotification is cancelled.
     ///- parameter index: Index of ABNotification to remove.
-    private func removeAtIndex(index: Int) {
-        notifQueue.removeAtIndex(index)
+    fileprivate func removeAtIndex(_ index: Int) {
+        notifQueue.remove(at: index)
     }
     
     ///- returns: Count of ABNotification in the queue.
-    private func count() -> Int {
+    fileprivate func count() -> Int {
         return notifQueue.count
     }
     
     ///- returns: The notifications queue.
-    private func notificationsQueue() -> [ABNotification] {
+    fileprivate func notificationsQueue() -> [ABNotification] {
         let queue = notifQueue
         return queue
     }
     
     ///- parameter identifier: Identifier of the notification to return.
     ///- returns: ABNotification if found, nil otherwise.
-    private func notificationWithIdentifier(identifier: String) -> ABNotification? {
+    fileprivate func notificationWithIdentifier(_ identifier: String) -> ABNotification? {
         for note in notifQueue {
             if note.identifier == identifier {
                 return note
@@ -314,15 +317,15 @@ private class ABNQueue : NSObject {
     
     ///Save queue on disk.
     ///- returns: The success of the saving operation.
-    private func save() -> Bool {
-        return NSKeyedArchiver.archiveRootObject(self.notifQueue, toFile: ArchiveURL.path!)
+    fileprivate func save() -> Bool {
+        return NSKeyedArchiver.archiveRootObject(self.notifQueue, toFile: ArchiveURL.path)
     }
     
     ///Load queue from disk.
     ///Called first when instantiating the ABNQueue singleton.
     ///You do not need to manually call this method and therefore do not declare it as public.
-    private func load() -> [ABNotification]? {
-        return NSKeyedUnarchiver.unarchiveObjectWithFile(ArchiveURL.path!) as? Array<ABNotification>
+    fileprivate func load() -> [ABNotification]? {
+        return NSKeyedUnarchiver.unarchiveObject(withFile: ArchiveURL.path) as? Array<ABNotification>
     }
     
 }
@@ -336,24 +339,24 @@ enum Repeats: String {
 
 ///A wrapper class around UILocalNotification.
 ///- author: Ahmed Mohamed
-public class ABNotification : NSObject, NSCoding, Comparable {
-    private var localNotification: UILocalNotification
+open class ABNotification : NSObject, NSCoding, Comparable {
+    fileprivate var localNotification: UILocalNotification
     var alertBody: String
     var alertAction: String?
     var soundName: String?
     var repeatInterval = Repeats.None
-    var userInfo: Dictionary<NSObject, AnyObject>
-    private(set) var identifier: String
-    private var scheduled = false
-    var fireDate: NSDate? {
+    var userInfo: Dictionary<String, AnyObject>
+    fileprivate(set) var identifier: String
+    fileprivate var scheduled = false
+    var fireDate: Date? {
         return localNotification.fireDate
     }
     
     init(alertBody: String) {
         self.alertBody = alertBody
         self.localNotification = UILocalNotification()
-        self.identifier = NSUUID().UUIDString
-        self.userInfo = Dictionary<NSObject, AnyObject>()
+        self.identifier = UUID().uuidString
+        self.userInfo = Dictionary<String, AnyObject>()
         super.init()
     }
     
@@ -361,12 +364,12 @@ public class ABNotification : NSObject, NSCoding, Comparable {
         self.alertBody = alertBody
         self.localNotification = UILocalNotification()
         self.identifier = identifier
-        self.userInfo = Dictionary<NSObject, AnyObject>()
+        self.userInfo = Dictionary<String, AnyObject>()
         super.init()
     }
     
     ///Used to instantiate an ABNotification when loaded from disk.
-    private init(notification: UILocalNotification, alertBody: String, alertAction: String?, soundName: String?, identifier: String, repeats: Repeats, userInfo: Dictionary<NSObject, AnyObject>, scheduled: Bool) {
+    fileprivate init(notification: UILocalNotification, alertBody: String, alertAction: String?, soundName: String?, identifier: String, repeats: Repeats, userInfo: Dictionary<String, AnyObject>, scheduled: Bool) {
         self.alertBody = alertBody
         self.alertAction = alertAction
         self.soundName = soundName;
@@ -382,7 +385,7 @@ public class ABNotification : NSObject, NSCoding, Comparable {
     ///> Checks to see if there is enough room for the notification to be scheduled. Otherwise, the notification is queued.
     ///- parameter: fireDate The date in which the notification will be fired at.
     ///- returns: The identifier of the notification. Use this identifier to retrieve the notification using `ABNQueue.notificationWithIdentifier` and `ABNScheduler.notificationWithIdentifier` methods.
-    func schedule(fireDate date: NSDate) -> String? {
+    func schedule(fireDate date: Date) -> String? {
         if self.scheduled {
             return nil
         } else {
@@ -390,17 +393,18 @@ public class ABNotification : NSObject, NSCoding, Comparable {
             self.localNotification.alertBody = self.alertBody
             self.localNotification.alertAction = self.alertAction
             self.localNotification.fireDate = date.removeSeconds()
+//            let info = self.userInfo
             self.localNotification.soundName = (self.soundName == nil) ? UILocalNotificationDefaultSoundName : self.soundName;
-            self.userInfo[ABNScheduler.identifierKey] = self.identifier
+            self.userInfo[ABNScheduler.identifierKey] = self.identifier as AnyObject?
             self.localNotification.userInfo = self.userInfo
             
             if repeatInterval != .None {
                 switch repeatInterval {
-                case .Hourly: self.localNotification.repeatInterval = NSCalendarUnit.Hour
-                case .Daily: self.localNotification.repeatInterval = NSCalendarUnit.Day
-                case .Weekly: self.localNotification.repeatInterval = NSCalendarUnit.WeekOfYear
-                case .Monthly: self.localNotification.repeatInterval = NSCalendarUnit.Month
-                case .Yearly: self.localNotification.repeatInterval = NSCalendarUnit.Year
+                case .Hourly: self.localNotification.repeatInterval = NSCalendar.Unit.hour
+                case .Daily: self.localNotification.repeatInterval = NSCalendar.Unit.day
+                case .Weekly: self.localNotification.repeatInterval = NSCalendar.Unit.weekOfYear
+                case .Monthly: self.localNotification.repeatInterval = NSCalendar.Unit.month
+                case .Yearly: self.localNotification.repeatInterval = NSCalendar.Unit.year
                 default: break
                 }
             }
@@ -411,7 +415,7 @@ public class ABNotification : NSObject, NSCoding, Comparable {
                         farthestNotification.cancel()
                         ABNQueue.queue.push(farthestNotification)
                         self.scheduled = true
-                        UIApplication.sharedApplication().scheduleLocalNotification(self.localNotification)
+                        UIApplication.shared.scheduleLocalNotification(self.localNotification)
                     } else {
                         ABNQueue.queue.push(self)
                     }
@@ -419,21 +423,21 @@ public class ABNotification : NSObject, NSCoding, Comparable {
                 return self.identifier
             }
             self.scheduled = true
-            UIApplication.sharedApplication().scheduleLocalNotification(self.localNotification)
+            UIApplication.shared.scheduleLocalNotification(self.localNotification)
             return self.identifier
         }
     }
     
     ///Reschedules the notification.
     ///- parameter fireDate: The date in which the notification will be fired at.
-    func reschedule(fireDate date: NSDate) {
+    func reschedule(fireDate date: Date) {
         cancel()
-        schedule(fireDate: date)
+        let _ = schedule(fireDate: date)
     }
     
     ///Cancels the notification if scheduled or queued.
     func cancel() {
-        UIApplication.sharedApplication().cancelLocalNotification(self.localNotification)
+        UIApplication.shared.cancelLocalNotification(self.localNotification)
         let queue = ABNQueue.queue.notificationsQueue()
         var i = 0
         for note in queue {
@@ -448,20 +452,20 @@ public class ABNotification : NSObject, NSCoding, Comparable {
     
     ///Snoozes the notification for a number of minutes.
     ///- parameter minutes: Minutes to snooze the notification for.
-    func snoozeForMinutes(minutes: Int) {
+    func snoozeForMinutes(_ minutes: Int) {
         reschedule(fireDate: self.localNotification.fireDate!.nextMinutes(minutes))
     }
     
     ///Snoozes the notification for a number of hours.
     ///- parameter minutes: Hours to snooze the notification for.
-    func snoozeForHours(hours: Int) {
-        reschedule(fireDate: self.localNotification.fireDate!.nextMinutes(hours * 60))
+    func snoozeForHours(_ hours: Int) {
+        reschedule(fireDate: self.localNotification.fireDate!.nextHours(hours))
     }
     
     ///Snoozes the notification for a number of days.
     ///- parameter minutes: Days to snooze the notification for.
-    func snoozeForDays(days: Int) {
-        reschedule(fireDate: self.localNotification.fireDate!.nextMinutes(days * 60 * 24))
+    func snoozeForDays(_ days: Int) {
+        reschedule(fireDate: self.localNotification.fireDate!.nextDays(days))
     }
     
     ///- returns: The state of the notification.
@@ -472,13 +476,13 @@ public class ABNotification : NSObject, NSCoding, Comparable {
     ///Used by ABNotificationX classes to convert NSCalendarUnit enum to Repeats enum.
     ///- parameter calendarUnit: NSCalendarUnit to convert.
     ///- returns: Repeats type that is equivalent to the passed NSCalendarUnit.
-    private class func calendarUnitToRepeats(calendarUnit cUnit: NSCalendarUnit) -> Repeats {
+    fileprivate class func calendarUnitToRepeats(calendarUnit cUnit: NSCalendar.Unit) -> Repeats {
         switch cUnit {
-        case NSCalendarUnit.Hour: return .Hourly
-        case NSCalendarUnit.Day: return .Daily
-        case NSCalendarUnit.WeekOfYear: return .Weekly
-        case NSCalendarUnit.Month: return .Monthly
-        case NSCalendarUnit.Year: return .Yearly
+        case NSCalendar.Unit.hour: return .Hourly
+        case NSCalendar.Unit.day: return .Daily
+        case NSCalendar.Unit.weekOfYear: return .Weekly
+        case NSCalendar.Unit.month: return .Monthly
+        case NSCalendar.Unit.year: return .Yearly
         default: return Repeats.None
         }
     }
@@ -486,7 +490,7 @@ public class ABNotification : NSObject, NSCoding, Comparable {
     ///Instantiates an ABNotification from a UILocalNotification.
     ///- parameter localNotification: The UILocalNotification to instantiate an ABNotification from.
     ///- returns: The instantiated ABNotification from the UILocalNotification.
-    private class func notificationWithUILocalNotification(localNotification: UILocalNotification) -> ABNotification {
+    fileprivate class func notificationWithUILocalNotification(_ localNotification: UILocalNotification) -> ABNotification {
         let alertBody = localNotification.alertBody!
         let alertAction = localNotification.alertAction
         let soundName = localNotification.soundName
@@ -494,32 +498,32 @@ public class ABNotification : NSObject, NSCoding, Comparable {
         let repeats = self.calendarUnitToRepeats(calendarUnit: localNotification.repeatInterval)
         let userInfo = localNotification.userInfo!
         
-        return ABNotification(notification: localNotification, alertBody: alertBody, alertAction: alertAction, soundName: soundName, identifier: identifier, repeats: repeats, userInfo: userInfo, scheduled: true)
+        return ABNotification(notification: localNotification, alertBody: alertBody, alertAction: alertAction, soundName: soundName, identifier: identifier, repeats: repeats, userInfo: userInfo as! Dictionary<String, AnyObject>, scheduled: true)
     }
     
     // MARK: NSCoding
     
     @objc convenience public required init?(coder aDecoder: NSCoder) {
-        guard let localNotification = aDecoder.decodeObjectForKey("ABNNotification") as? UILocalNotification, let alertBody =  aDecoder.decodeObjectForKey("ABNAlertBody") as? String, let alertAction = aDecoder.decodeObjectForKey("ABNAlertAction") as? String, let soundName = aDecoder.decodeObjectForKey("ABNSoundName") as? String, let repeats = aDecoder.decodeObjectForKey("ABNRepeats") as? String, let userInfo = aDecoder.decodeObjectForKey("ABNUserInfo") as? Dictionary<NSObject, AnyObject>, let identifier = aDecoder.decodeObjectForKey("ABNIdentifier") as? String, let scheduled = aDecoder.decodeObjectForKey("ABNScheduled") as? Bool else { return nil }
+        guard let localNotification = aDecoder.decodeObject(forKey: "ABNNotification") as? UILocalNotification, let alertBody =  aDecoder.decodeObject(forKey: "ABNAlertBody") as? String, let alertAction = aDecoder.decodeObject(forKey: "ABNAlertAction") as? String, let soundName = aDecoder.decodeObject(forKey: "ABNSoundName") as? String, let repeats = aDecoder.decodeObject(forKey: "ABNRepeats") as? String, let userInfo = aDecoder.decodeObject(forKey: "ABNUserInfo") as? Dictionary<String, AnyObject>, let identifier = aDecoder.decodeObject(forKey: "ABNIdentifier") as? String, let scheduled = aDecoder.decodeObject(forKey: "ABNScheduled") as? Bool else { return nil }
         
         self.init(notification: localNotification, alertBody: alertBody, alertAction: alertAction, soundName: soundName, identifier: identifier, repeats: Repeats(rawValue: repeats)!, userInfo: userInfo, scheduled: scheduled)
     }
     
-    @objc public func encodeWithCoder(aCoder: NSCoder) {
-        aCoder.encodeObject(localNotification, forKey: "ABNNotification")
-        aCoder.encodeObject(alertBody, forKey: "ABNAlertBody")
-        aCoder.encodeObject(alertAction, forKey: "ABNAlertAction")
-        aCoder.encodeObject(soundName, forKey: "ABNSoundName")
-        aCoder.encodeObject(identifier, forKey: "ABNIdentifier")
-        aCoder.encodeObject(repeatInterval.rawValue, forKey: "ABNRepeats")
-        aCoder.encodeObject(userInfo, forKey: "ABNUserInfo")
-        aCoder.encodeObject(scheduled, forKey: "ABNScheduled")
+    @objc open func encode(with aCoder: NSCoder) {
+        aCoder.encode(localNotification, forKey: "ABNNotification")
+        aCoder.encode(alertBody, forKey: "ABNAlertBody")
+        aCoder.encode(alertAction, forKey: "ABNAlertAction")
+        aCoder.encode(soundName, forKey: "ABNSoundName")
+        aCoder.encode(identifier, forKey: "ABNIdentifier")
+        aCoder.encode(repeatInterval.rawValue, forKey: "ABNRepeats")
+        aCoder.encode(userInfo, forKey: "ABNUserInfo")
+        aCoder.encode(scheduled, forKey: "ABNScheduled")
     }
     
 }
 
 public func <(lhs: ABNotification, rhs: ABNotification) -> Bool {
-    return lhs.localNotification.fireDate?.compare(rhs.localNotification.fireDate!) == NSComparisonResult.OrderedAscending
+    return lhs.localNotification.fireDate?.compare(rhs.localNotification.fireDate!) == ComparisonResult.orderedAscending
 }
 
 public func ==(lhs: ABNotification, rhs: ABNotification) -> Bool {
@@ -530,7 +534,7 @@ public func ==(lhs: ABNotification, rhs: ABNotification) -> Bool {
 
 //MARK: NSDate
 
-extension NSDate: Comparable {
+extension Date {
     
     /**
      Add a number of minutes to a date.
@@ -540,11 +544,11 @@ extension NSDate: Comparable {
      - returns: The date after the minutes addition.
      */
     
-    func nextMinutes(minutes: Int) -> NSDate {
-        let calendar = NSCalendar.currentCalendar()
-        let components = NSDateComponents()
+    func nextMinutes(_ minutes: Int) -> Date {
+        let calendar = Calendar.current
+        var components = DateComponents()
         components.minute = minutes
-        return calendar.dateByAddingComponents(components, toDate: self, options: NSCalendarOptions(rawValue: 0))!
+        return (calendar as NSCalendar).date(byAdding: components, to: self, options: NSCalendar.Options(rawValue: 0))!
     }
     
     /**
@@ -555,7 +559,7 @@ extension NSDate: Comparable {
      - returns: The date after the hours addition.
      */
     
-    func nextHours(hours: Int) -> NSDate {
+    func nextHours(_ hours: Int) -> Date {
         return self.nextMinutes(hours * 60)
     }
     
@@ -567,14 +571,14 @@ extension NSDate: Comparable {
      - returns: The date after the days addition.
      */
     
-    func nextDays(days: Int) -> NSDate {
+    func nextDays(_ days: Int) -> Date {
         return nextMinutes(days * 60 * 24)
     }
     
-    func removeSeconds() -> NSDate {
-        let calendar = NSCalendar.currentCalendar()
-        let components = calendar.components([.Year, .Month, .Day, .Hour, .Minute], fromDate: self)
-        return calendar.dateFromComponents(components)!
+    func removeSeconds() -> Date {
+        let calendar = Calendar.current
+        let components = (calendar as NSCalendar).components([.year, .month, .day, .hour, .minute], from: self)
+        return calendar.date(from: components)!
     }
     
     /**
@@ -585,13 +589,13 @@ extension NSDate: Comparable {
      - returns: Date with the specified time and offset.
      */
     
-    static func dateWithTime(time: Int, offset: Int) -> NSDate {
-        let calendar = NSCalendar.currentCalendar()
-        let components = calendar.components([.Year, .Month, .Day, .Hour, .Minute], fromDate: NSDate())
+    static func dateWithTime(_ time: Int, offset: Int) -> Date {
+        let calendar = Calendar.current
+        var components = (calendar as NSCalendar).components([.year, .month, .day, .hour, .minute], from: Date())
         components.minute = (time % 100) + offset % 60
         components.hour = (time / 100) + (offset / 60)
-        var date = calendar.dateFromComponents(components)!
-        if date < NSDate() {
+        var date = calendar.date(from: components)!
+        if date < Date() {
             date = date.nextMinutes(60*24)
         }
         
@@ -600,18 +604,18 @@ extension NSDate: Comparable {
     
 }
 
-public func <(lhs: NSDate, rhs: NSDate) -> Bool {
-    return lhs.compare(rhs) == NSComparisonResult.OrderedAscending
-}
+//public func <(lhs: Date, rhs: Date) -> Bool {
+//    return lhs.compare(rhs) == ComparisonResult.orderedAscending
+//}
 
-public func ==(lhs: NSDate, rhs: NSDate) -> Bool {
-    return lhs.compare(rhs) == NSComparisonResult.OrderedSame
-}
+//public func ==(lhs: Date, rhs: Date) -> Bool {
+//    return lhs.compare(rhs) == ComparisonResult.orderedSame
+//}
 
 //MARK: Int
 
 extension Int {
-    var date: NSDate {
-        return NSDate.dateWithTime(self, offset: 0)
+    var date: Date {
+        return Date.dateWithTime(self, offset: 0)
     }
 }

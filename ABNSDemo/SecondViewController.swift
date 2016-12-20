@@ -21,9 +21,9 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         queued = ABNScheduler.notificationsQueue()
     }
     
-    override func viewWillAppear(animated: Bool) {
-        self.tabBarController!.navigationItem.rightBarButtonItem?.enabled = false
-        self.tabBarController!.navigationItem.leftBarButtonItem?.enabled = false
+    override func viewWillAppear(_ animated: Bool) {
+        self.tabBarController!.navigationItem.rightBarButtonItem?.isEnabled = false
+        self.tabBarController!.navigationItem.leftBarButtonItem?.isEnabled = false
         
         scheduled = ABNScheduler.scheduledNotifications()
         queued = ABNScheduler.notificationsQueue()
@@ -38,27 +38,27 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
     
     //MARK: Table View
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "notificationCell")
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: "notificationCell")
         if indexPath.section == 0 {
             let alertBody = scheduled?[indexPath.row].alertBody
             let repeatInterval = (scheduled?[indexPath.row].repeatInterval.rawValue)
             cell.textLabel!.text = "\(alertBody!) -- Repeats: \(repeatInterval!)"
             if let date = scheduled?[indexPath.row].fireDate {
-                cell.detailTextLabel!.text = String(date)
+                cell.detailTextLabel!.text = String(describing: date)
             }
         } else {
             let alertBody = queued?[indexPath.row].alertBody
             let repeatInterval = (queued?[indexPath.row].repeatInterval.rawValue)
             cell.textLabel!.text = "\(alertBody!) -- Repeats: \(repeatInterval!)"
             if let date = queued?[indexPath.row].fireDate {
-                cell.detailTextLabel!.text = "Fire date: " + String(date)
+                cell.detailTextLabel!.text = "Fire date: " + String(describing: date)
             }
         }
         return cell
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0: return ABNScheduler.scheduledCount()
         case 1: return ABNScheduler.queuedCount()
@@ -66,15 +66,15 @@ class SecondViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 54
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case 0: return "Scheduled: \(String(ABNScheduler.scheduledCount()))"
         case 1: return "Queued: \(String(ABNScheduler.queuedCount()))"

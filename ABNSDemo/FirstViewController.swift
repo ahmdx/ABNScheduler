@@ -14,11 +14,11 @@ class FirstViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
     var alertActionField: UITextField!
     
     var datePicker: UIDatePicker!
-    var dateValue: NSDate?
+    var dateValue: Date?
     var repeatingPicker: UIPickerView!
     let repeatingArray = [Repeats.None.rawValue, Repeats.Hourly.rawValue, Repeats.Daily.rawValue, Repeats.Weekly.rawValue, Repeats.Monthly.rawValue, Repeats.Yearly.rawValue]
     var repeatingValue = Repeats.None
-    var dateFormatter: NSDateFormatter!
+    var dateFormatter: DateFormatter!
     
     @IBOutlet weak var fireDateButton: UIButton!
     @IBOutlet weak var repeatingButton: UIButton!
@@ -27,31 +27,31 @@ class FirstViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        self.tabBarController!.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Schedule", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(FirstViewController.schedule))
-        self.tabBarController!.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel All", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(FirstViewController.cancelAll))
+        self.tabBarController!.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Schedule", style: UIBarButtonItemStyle.plain, target: self, action: #selector(FirstViewController.schedule))
+        self.tabBarController!.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel All", style: UIBarButtonItemStyle.plain, target: self, action: #selector(FirstViewController.cancelAll))
         
         alertBodyField = self.view.viewWithTag(10) as! UITextField
         alertBodyField.delegate = self
         alertActionField = self.view.viewWithTag(11) as! UITextField
         alertActionField.delegate = self
         
-        dateFormatter = NSDateFormatter()
-        dateFormatter.dateStyle = NSDateFormatterStyle.LongStyle
-        dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
+        dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = DateFormatter.Style.long
+        dateFormatter.timeStyle = DateFormatter.Style.short
     }
     
-    override func viewDidAppear(animated: Bool) {
-        self.tabBarController!.navigationItem.rightBarButtonItem?.enabled = true
-        self.tabBarController!.navigationItem.leftBarButtonItem?.enabled = true
+    override func viewDidAppear(_ animated: Bool) {
+        self.tabBarController!.navigationItem.rightBarButtonItem?.isEnabled = true
+        self.tabBarController!.navigationItem.leftBarButtonItem?.isEnabled = true
     }
     
     func schedule() {
         let alertBody = alertBodyField.text
-        if alertBody?.characters.count > 0 && dateValue != nil {
+        if (alertBody?.characters.count)! > 0 && dateValue != nil {
             let note = ABNotification(alertBody: alertBody!)
             note.alertAction = alertActionField.text
             note.repeatInterval = repeatingValue
-            note.schedule(fireDate: dateValue!)
+            let _ = note.schedule(fireDate: dateValue!)
             
             self.view.endEditing(true)
             return
@@ -67,61 +67,61 @@ class FirstViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
     
     @IBAction func setFireDate() {
         if datePicker == nil {
-            datePicker = UIDatePicker(frame: CGRectMake(0,UIScreen.mainScreen().bounds.size.height-250, UIScreen.mainScreen().bounds.size.width, 200))
-            datePicker.addTarget(self, action: #selector(FirstViewController.didSelectDate(_:)), forControlEvents: UIControlEvents.ValueChanged)
+            datePicker = UIDatePicker(frame: CGRect(x: 0,y: UIScreen.main.bounds.size.height-250, width: UIScreen.main.bounds.size.width, height: 200))
+            datePicker.addTarget(self, action: #selector(FirstViewController.didSelectDate(_:)), for: UIControlEvents.valueChanged)
             self.view.addSubview(datePicker)
         }
         
-        datePicker.minimumDate = NSDate().nextMinutes(1)
+        datePicker.minimumDate = Date().nextMinutes(1)
         self.view.endEditing(true)
-        datePicker.hidden = false
+        datePicker.isHidden = false
         if repeatingPicker != nil {
-            repeatingPicker.hidden = true
+            repeatingPicker.isHidden = true
         }
         dateValue = datePicker.date
-        self.fireDateButton.setTitle(dateFormatter.stringFromDate(dateValue!), forState: UIControlState.Normal)
+        self.fireDateButton.setTitle(dateFormatter.string(from: dateValue!), for: UIControlState())
     }
     
-    func didSelectDate(datePicker: UIDatePicker) {
+    func didSelectDate(_ datePicker: UIDatePicker) {
         dateValue = datePicker.date
         
-        self.fireDateButton.setTitle(dateFormatter.stringFromDate(dateValue!), forState: UIControlState.Normal)
+        self.fireDateButton.setTitle(dateFormatter.string(from: dateValue!), for: UIControlState())
     }
     
     @IBAction func setRepeating() {
         if repeatingPicker == nil {
-            repeatingPicker = UIPickerView(frame: CGRectMake(0,UIScreen.mainScreen().bounds.size.height-250, UIScreen.mainScreen().bounds.size.width, 200))
+            repeatingPicker = UIPickerView(frame: CGRect(x: 0,y: UIScreen.main.bounds.size.height-250, width: UIScreen.main.bounds.size.width, height: 200))
             repeatingPicker.delegate = self
             self.view.addSubview(repeatingPicker)
         }
         self.view.endEditing(true)
-        repeatingPicker.hidden = false
+        repeatingPicker.isHidden = false
         if datePicker != nil {
-            datePicker.hidden = true
+            datePicker.isHidden = true
         }
-        self.repeatingButton.setTitle(repeatingArray[0], forState: UIControlState.Normal)
+        self.repeatingButton.setTitle(repeatingArray[0], for: UIControlState())
     }
     
     //MARK: Picker View
     
-    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return repeatingArray.count
     }
     
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return repeatingArray[row]
     }
     
-    func pickerView(pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+    func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
         return 44
     }
     
-    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         self.repeatingValue = Repeats(rawValue: repeatingArray[row])!
-        self.repeatingButton.setTitle(repeatingArray[row], forState: UIControlState.Normal)
+        self.repeatingButton.setTitle(repeatingArray[row], for: UIControlState())
     }
     
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
