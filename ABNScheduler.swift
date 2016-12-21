@@ -68,7 +68,7 @@ class ABNScheduler {
     class func cancelAllNotifications() {
         UIApplication.shared.cancelAllLocalNotifications()
         ABNQueue.queue.clear()
-        saveQueue()
+        let _ = saveQueue()
         print("All notifications have been cancelled")
     }
     
@@ -188,8 +188,8 @@ class ABNScheduler {
     
     ///Persists the notifications queue to the disk
     ///> Call this method whenever you need to save changes done to the queue and/or before terminating the app.
-    class func saveQueue() {
-        let _ = ABNQueue.queue.save()
+    class func saveQueue() -> Bool {
+        return ABNQueue.queue.save()
     }
     
     //MARK: Testing
@@ -206,7 +206,7 @@ class ABNScheduler {
             return
         }
         
-        print("SCHEDLUED")
+        print("SCHEDULED")
         
         var i = 1
         for note in notifs! {
@@ -325,7 +325,7 @@ private class ABNQueue : NSObject {
     ///Called first when instantiating the ABNQueue singleton.
     ///You do not need to manually call this method and therefore do not declare it as public.
     fileprivate func load() -> [ABNotification]? {
-        return NSKeyedUnarchiver.unarchiveObject(withFile: ArchiveURL.path) as? Array<ABNotification>
+        return NSKeyedUnarchiver.unarchiveObject(withFile: ArchiveURL.path) as? [ABNotification]
     }
     
 }
@@ -397,6 +397,8 @@ open class ABNotification : NSObject, NSCoding, Comparable {
             self.localNotification.soundName = (self.soundName == nil) ? UILocalNotificationDefaultSoundName : self.soundName;
             self.userInfo[ABNScheduler.identifierKey] = self.identifier as AnyObject?
             self.localNotification.userInfo = self.userInfo
+            
+            self.soundName = self.localNotification.soundName
             
             if repeatInterval != .None {
                 switch repeatInterval {
@@ -504,9 +506,35 @@ open class ABNotification : NSObject, NSCoding, Comparable {
     // MARK: NSCoding
     
     @objc convenience public required init?(coder aDecoder: NSCoder) {
-        guard let localNotification = aDecoder.decodeObject(forKey: "ABNNotification") as? UILocalNotification, let alertBody =  aDecoder.decodeObject(forKey: "ABNAlertBody") as? String, let alertAction = aDecoder.decodeObject(forKey: "ABNAlertAction") as? String, let soundName = aDecoder.decodeObject(forKey: "ABNSoundName") as? String, let repeats = aDecoder.decodeObject(forKey: "ABNRepeats") as? String, let userInfo = aDecoder.decodeObject(forKey: "ABNUserInfo") as? Dictionary<String, AnyObject>, let identifier = aDecoder.decodeObject(forKey: "ABNIdentifier") as? String, let scheduled = aDecoder.decodeObject(forKey: "ABNScheduled") as? Bool else { return nil }
+        guard let localNotification = aDecoder.decodeObject(forKey: "ABNNotification") as? UILocalNotification  else {
+            return nil
+        }
         
-        self.init(notification: localNotification, alertBody: alertBody, alertAction: alertAction, soundName: soundName, identifier: identifier, repeats: Repeats(rawValue: repeats)!, userInfo: userInfo, scheduled: scheduled)
+        guard let alertBody =  aDecoder.decodeObject(forKey: "ABNAlertBody") as? String else {
+            return nil
+        }
+        
+        guard let alertAction = aDecoder.decodeObject(forKey: "ABNAlertAction") as? String else {
+            return nil
+        }
+        
+        guard let identifier = aDecoder.decodeObject(forKey: "ABNIdentifier") as? String else {
+            return nil
+        }
+        
+        guard let userInfo = aDecoder.decodeObject(forKey: "ABNUserInfo") as? Dictionary<String, AnyObject> else {
+            return nil
+        }
+        
+        guard let repeats = aDecoder.decodeObject(forKey: "ABNRepeats") as? String else {
+            return nil
+        }
+        
+        guard let soundName = aDecoder.decodeObject(forKey: "ABNSoundName") as? String else {
+            return nil
+        }
+        
+        self.init(notification: localNotification, alertBody: alertBody, alertAction: alertAction, soundName: soundName, identifier: identifier, repeats: Repeats(rawValue: repeats)!, userInfo: userInfo, scheduled: false)
     }
     
     @objc open func encode(with aCoder: NSCoder) {
@@ -517,7 +545,6 @@ open class ABNotification : NSObject, NSCoding, Comparable {
         aCoder.encode(identifier, forKey: "ABNIdentifier")
         aCoder.encode(repeatInterval.rawValue, forKey: "ABNRepeats")
         aCoder.encode(userInfo, forKey: "ABNUserInfo")
-        aCoder.encode(scheduled, forKey: "ABNScheduled")
     }
     
 }

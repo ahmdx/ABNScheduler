@@ -233,4 +233,14 @@ class ABNSchedulerTests: XCTestCase {
         XCTAssertEqual(true, note?.isScheduled())
     }
     
+    /// Tests whether saving the queue is successful.
+    func testNotificationQueueSave() {
+        for _ in 1...99 {
+            let _ = ABNScheduler.schedule(alertBody: "test", fireDate: Date().nextHours(1))
+        }
+        
+        let saved = ABNScheduler.saveQueue()
+        
+        XCTAssertEqual(true, saved)
+    }
 }
