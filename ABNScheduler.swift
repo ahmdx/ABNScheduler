@@ -224,6 +224,13 @@ class ABNScheduler {
         
         print("")
     }
+    
+    /// Used only for testing.
+    /// - important: This method is only used to test that loading the queue is successful. Do not use it in production. The `ABNQueue().load()` method is called automatically when initially accessing the notification queue.
+    /// - returns: Array of notifications read from disk.
+    class func loadQueue() -> [ABNotification]? {
+        return ABNQueue().load()
+    }
 }
 
 //MARK:-
@@ -236,7 +243,7 @@ private class ABNQueue : NSObject {
     
     override init() {
         super.init()
-        if let notificationQueue = load() {
+        if let notificationQueue = self.load() {
             notifQueue = notificationQueue
         }
     }
@@ -246,11 +253,10 @@ private class ABNQueue : NSObject {
         notifQueue.insert(notification, at: findInsertionPoint(notification))
     }
     
-    /** Finds the position at which the new ABNotification is inserted in the queue.
-     - parameter notification: ABNotification to insert.
-     - returns: Index to insert the ABNotification at.
-     - seealso: [swift-algorithm-club](https://github.com/hollance/swift-algorithm-club/tree/master/Ordered%20Array)
-     */
+     /// Finds the position at which the new ABNotification is inserted in the queue.
+     /// - parameter notification: ABNotification to insert.
+     /// - returns: Index to insert the ABNotification at.
+     /// - seealso: [swift-algorithm-club](https://github.com/hollance/swift-algorithm-club/tree/master/Ordered%20Array)
     fileprivate func findInsertionPoint(_ notification: ABNotification) -> Int {
         let range = 0..<notifQueue.count
         var rangeLowerBound = range.lowerBound
@@ -383,7 +389,7 @@ open class ABNotification : NSObject, NSCoding, Comparable {
     
     ///Schedules the notification.
     ///> Checks to see if there is enough room for the notification to be scheduled. Otherwise, the notification is queued.
-    ///- parameter: fireDate The date in which the notification will be fired at.
+    ///- parameter fireDate: The date in which the notification will be fired at.
     ///- returns: The identifier of the notification. Use this identifier to retrieve the notification using `ABNQueue.notificationWithIdentifier` and `ABNScheduler.notificationWithIdentifier` methods.
     func schedule(fireDate date: Date) -> String? {
         if self.scheduled {
@@ -393,7 +399,6 @@ open class ABNotification : NSObject, NSCoding, Comparable {
             self.localNotification.alertBody = self.alertBody
             self.localNotification.alertAction = self.alertAction
             self.localNotification.fireDate = date.removeSeconds()
-//            let info = self.userInfo
             self.localNotification.soundName = (self.soundName == nil) ? UILocalNotificationDefaultSoundName : self.soundName;
             self.userInfo[ABNScheduler.identifierKey] = self.identifier as AnyObject?
             self.localNotification.userInfo = self.userInfo
@@ -514,10 +519,6 @@ open class ABNotification : NSObject, NSCoding, Comparable {
             return nil
         }
         
-        guard let alertAction = aDecoder.decodeObject(forKey: "ABNAlertAction") as? String else {
-            return nil
-        }
-        
         guard let identifier = aDecoder.decodeObject(forKey: "ABNIdentifier") as? String else {
             return nil
         }
@@ -533,6 +534,8 @@ open class ABNotification : NSObject, NSCoding, Comparable {
         guard let soundName = aDecoder.decodeObject(forKey: "ABNSoundName") as? String else {
             return nil
         }
+        
+        let alertAction = aDecoder.decodeObject(forKey: "ABNAlertAction") as? String
         
         self.init(notification: localNotification, alertBody: alertBody, alertAction: alertAction, soundName: soundName, identifier: identifier, repeats: Repeats(rawValue: repeats)!, userInfo: userInfo, scheduled: false)
     }
@@ -630,14 +633,6 @@ extension Date {
     }
     
 }
-
-//public func <(lhs: Date, rhs: Date) -> Bool {
-//    return lhs.compare(rhs) == ComparisonResult.orderedAscending
-//}
-
-//public func ==(lhs: Date, rhs: Date) -> Bool {
-//    return lhs.compare(rhs) == ComparisonResult.orderedSame
-//}
 
 //MARK: Int
 

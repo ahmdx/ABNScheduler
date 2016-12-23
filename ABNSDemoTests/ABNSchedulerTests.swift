@@ -19,6 +19,7 @@ class ABNSchedulerTests: XCTestCase {
     
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
+        ABNScheduler.cancelAllNotifications()
         super.tearDown()
     }
     
@@ -242,5 +243,20 @@ class ABNSchedulerTests: XCTestCase {
         let saved = ABNScheduler.saveQueue()
         
         XCTAssertEqual(true, saved)
+    }
+    
+    /// Tests whether loading the queue is successful.
+    func testNotificationQueueLoad() {
+        for _ in 1...99 {
+            let _ = ABNScheduler.schedule(alertBody: "test", fireDate: Date().nextHours(1))
+        }
+        
+        let _ = ABNScheduler.saveQueue()
+        
+        let queue = ABNScheduler.loadQueue()
+        
+        XCTAssertNotNil(queue)
+        XCTAssertNotEqual(0, queue?.count)
+        XCTAssertEqual(99 - ABNScheduler.maximumScheduledNotifications, queue?.count)
     }
 }
