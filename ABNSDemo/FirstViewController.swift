@@ -45,7 +45,7 @@ class FirstViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
         self.tabBarController!.navigationItem.leftBarButtonItem?.isEnabled = true
     }
     
-    func schedule() {
+    @objc func schedule() {
         let alertBody = alertBodyField.text
         if (alertBody?.characters.count)! > 0 && dateValue != nil {
             let note = ABNotification(alertBody: alertBody!)
@@ -60,7 +60,7 @@ class FirstViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
         print("Notification must have alert body and fire date")
     }
     
-    func cancelAll() {
+    @objc func cancelAll() {
         ABNScheduler.cancelAllNotifications()
         self.view.endEditing(true)
     }
@@ -82,7 +82,7 @@ class FirstViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
         self.fireDateButton.setTitle(dateFormatter.string(from: dateValue!), for: UIControlState())
     }
     
-    func didSelectDate(_ datePicker: UIDatePicker) {
+    @objc func didSelectDate(_ datePicker: UIDatePicker) {
         dateValue = datePicker.date
         
         self.fireDateButton.setTitle(dateFormatter.string(from: dateValue!), for: UIControlState())
