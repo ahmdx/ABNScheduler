@@ -1,3 +1,5 @@
+## This library is no longer maintained. Please use [Robin](https://github.com/ahmdx/Robin) instead. Happy coding!
+
 # ABNScheduler 
 [![Build Status](https://travis-ci.org/ahmdx/ABNScheduler.svg?branch=master)](https://travis-ci.org/ahmdx/ABNScheduler)
 [![Swift 3](https://img.shields.io/badge/Swift-3-orange.svg?style=flat)](https://swift.org)
